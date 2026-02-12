@@ -8,7 +8,7 @@ services:
         MYSQL_DATABASE: vetupbank
         TZ: Europe/Madrid
       healthcheck:
-        test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-prootº"]
+        test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-proot"]
         interval: 10s
         timeout: 5s
         retries: 5
@@ -23,7 +23,7 @@ services:
     environment:
       VIRTUAL_HOST: vetup-bank-back.preproducciondaw.cip.fpmislata.com
       # sobrescribir application.properties
-      SPRING_DATASOURCE_URL: jdbc:mariadb://vetupBank-mariadb:3306/vetup?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_URL: jdbc:mariadb://vetup-bank-mariadb:3306/vetupbank?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
     depends_on:
       vetup-bank-mariadb:
         condition: service_healthy
@@ -35,9 +35,9 @@ services:
       dockerfile: Dockerfile-bank-front
     container_name: vetup-bank-front
     environment:
-      VIRTUAL_HOST: vetup-bank-frontº.preproducciondaw.cip.fpmislata.com
+      VIRTUAL_HOST: vetup-bank-front.preproducciondaw.cip.fpmislata.com
     depends_on:
-      - vetup-bank-front
+      - vetup-bank-back
     networks:
       - proxy_red
 
@@ -76,9 +76,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-store-front
-    container_name: vetup
+    container_name: vetup-store-front
     environment:
-      VIRTUAL_HOST: vetup.preproducciondaw.cip.fpmislata.com
+      VIRTUAL_HOST: vetup-store-front.preproducciondaw.cip.fpmislata.com
     depends_on:
       - vetup-store-back
     networks:
@@ -90,7 +90,7 @@ services:
       dockerfile: Dockerfile-store-adm-front
     container_name: vetup-store-adm-front
     environment:
-      VIRTUAL_HOST: vetup-store-adm.preproducciondaw.cip.fpmislata.com
+      VIRTUAL_HOST: vetup-store-adm-front.preproducciondaw.cip.fpmislata.com
     depends_on:
       - vetup-store-back
     networks:
