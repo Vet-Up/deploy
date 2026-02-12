@@ -1,0 +1,103 @@
+services:
+#--------------banco-------------------------------
+  vetup-bank-mariadb:
+      image: mariadb:latest
+      container_name: vetup-bank-mariadb
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: vetupbank
+        TZ: Europe/Madrid
+      healthcheck:
+        test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-prootº"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - proxy_red
+
+  vetup-bank-back:
+    build:
+      context: .
+      dockerfile: Dockerfile-bank-back
+    container_name: vetup-bank-back
+    environment:
+      VIRTUAL_HOST: vetup-bank-back.preproducciondaw.cip.fpmislata.com
+      # sobrescribir application.properties
+      SPRING_DATASOURCE_URL: jdbc:mariadb://vetupBank-mariadb:3306/vetup?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      vetup-bank-mariadb:
+        condition: service_healthy
+    networks:
+      - proxy_red
+  vetup-bank-front:
+    build:
+      context: .
+      dockerfile: Dockerfile-bank-front
+    container_name: vetup-bank-front
+    environment:
+      VIRTUAL_HOST: vetup-bank-frontº.preproducciondaw.cip.fpmislata.com
+    depends_on:
+      - vetup-bank-front
+    networks:
+      - proxy_red
+
+#--------------store-----------------------
+  vetup-mariadb:
+      image: mariadb:latest
+      container_name: vetup-mariadb
+      environment:
+        MYSQL_ROOT_PASSWORD: root
+        MYSQL_DATABASE: vetup
+        TZ: Europe/Madrid
+      healthcheck:
+        test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-uroot", "-proot"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+      networks:
+        - proxy_red
+
+  vetup-store-back:
+    build:
+      context: .
+      dockerfile: Dockerfile-store-back
+    container_name: vetup-store-back
+    environment:
+      VIRTUAL_HOST: vetup-store-back.preproducciondaw.cip.fpmislata.com
+      # sobrescribir application.properties
+      SPRING_DATASOURCE_URL: jdbc:mariadb://vetup-mariadb:3306/vetup?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    depends_on:
+      vetup-mariadb:
+        condition: service_healthy
+    networks:
+      - proxy_red
+
+  vetup-store-front:
+    build:
+      context: .
+      dockerfile: Dockerfile-store-front
+    container_name: vetup
+    environment:
+      VIRTUAL_HOST: vetup.preproducciondaw.cip.fpmislata.com
+    depends_on:
+      - vetup-store-back
+    networks:
+      - proxy_red
+
+  vetup-store-adm-front:
+    build:
+      context: .
+      dockerfile: Dockerfile-store-adm-front
+    container_name: vetup-store-adm-front
+    environment:
+      VIRTUAL_HOST: vetup-store-adm.preproducciondaw.cip.fpmislata.com
+    depends_on:
+      - vetup-store-back
+    networks:
+      - proxy_red
+    
+
+networks:
+  proxy_red:
+    external:
+      name: nginx-proxy-network
