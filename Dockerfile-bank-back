@@ -12,9 +12,6 @@ WORKDIR /opt/app/banco-back
 RUN git switch -c develop origin/develop
 RUN mvn clean install -DskipTests
 
-
-RUN mvn clean package spring-boot:repackage -Dmaven.test.skip=true
-
 EXPOSE 8080
 
 CMD ["java","-jar", "target/tienda_back-1.0-SNAPSHOT.jar"]
