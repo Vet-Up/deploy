@@ -24,6 +24,7 @@ services:
       VIRTUAL_HOST: vetup-bank-back.preproducciondaw.cip.fpmislata.com
       # sobrescribir application.properties
       SPRING_DATASOURCE_URL: jdbc:mariadb://vetup-bank-mariadb:3306/vetupbank?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      TZ: Europe/Madrid
     depends_on:
       vetup-bank-mariadb:
         condition: service_healthy
@@ -66,6 +67,7 @@ services:
       VIRTUAL_HOST: vetup-store-back.preproducciondaw.cip.fpmislata.com
       # sobrescribir application.properties
       SPRING_DATASOURCE_URL: jdbc:mariadb://vetup-mariadb:3306/vetup?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+      TZ: Europe/Madrid
     depends_on:
       vetup-mariadb:
         condition: service_healthy
