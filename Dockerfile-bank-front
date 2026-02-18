@@ -7,7 +7,7 @@ RUN mkdir /opt/app
 WORKDIR /opt/app
 RUN git clone https://github.com/Vet-Up/banco-front.git
 WORKDIR /opt/app/banco-front
-RUN git switch -c develop origin/develop
+RUN git switch -c release origin/release
 RUN npm ci
 RUN npm run build
 
